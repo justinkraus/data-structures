@@ -1,6 +1,6 @@
 # Weekly Assignment 1
 
-This script builds on the example starter code [provided here](https://github.com/visualizedata/data-structures/blob/master/weekly_assignment_01.md) to parse the individual urls and save them as text files.
+This script parses an array of urls and saves them as individual text files. The script builds on the example starter code [provided here](https://github.com/visualizedata/data-structures/blob/master/weekly_assignment_01.md) with the changes detailed below.
 
 ### Complete Script
 ```
