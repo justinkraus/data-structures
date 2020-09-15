@@ -37,4 +37,8 @@ var addr_arry_b = addr_arry_st.map(function(x){ return x.replace(/ *\([^\]]*\)/,
 
 console.log(addr_arry_b)
 
-fs.writeFileSync('data/addr_arry.txt', addr_arry_b);
+//adding newline for text file
+var add_arry_text = addr_arry_b.join('\n');
+
+// fs.writeFileSync('data/addr_arry.txt', addr_arry_b);
+fs.writeFileSync('data/add_arry_text.txt', add_arry_text);
