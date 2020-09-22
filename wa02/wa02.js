@@ -42,3 +42,6 @@ var add_arry_text = addr_arry_b.join('\n');
 
 // fs.writeFileSync('data/addr_arry.txt', addr_arry_b);
 fs.writeFileSync('data/add_arry_text.txt', add_arry_text);
+
+// POST EDIT UPDATEL added in json stringified version
+fs.writeFileSync('data/addr_arry_js.txt', JSON.stringify(addr_arry_b));

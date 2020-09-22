@@ -86,3 +86,9 @@ var add_arry_text = addr_arry_b.join('\n');
 fs.writeFileSync('data/add_arry_text.txt', add_arry_text);
 ```
 
+### Update After Original Post
+Added in an additional line to JSON.stringify() the array variable to ensure the output text file could be processed by the API in wa03.
+
+```
+fs.writeFileSync('data/addr_arry_js.txt', JSON.stringify(addr_arry_b));
+```
