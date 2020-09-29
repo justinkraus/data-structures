@@ -17,6 +17,9 @@ client.connect();
 // Sample SQL statement to query the entire contents of a table: 
 var thisQuery = "SELECT * FROM aalocations;";
 
+// Updated script per google form for assignment questioning number of rows
+var thisQuery1 = "SELECT COUNT(*) FROM aalocations"
+
 client.query(thisQuery, (err, res) => {
     console.log(err, res.rows);
     client.end();
