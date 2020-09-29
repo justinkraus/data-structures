@@ -7,6 +7,7 @@ const fs = require('fs'),
       dotenv = require('dotenv');
 
 dotenv.config({path: '/home/ec2-user/environment/data-structures/.env'});
+//comment from class: If the path is relative, it should generalise to most people’s directory: “~/data-structures/.env”
 
 const API_KEY = process.env.API_KEY;
 const API_URL = 'https://geoservices.tamu.edu/Services/Geocode/WebService/GeocoderWebServiceHttpNonParsed_V04_01.aspx'
