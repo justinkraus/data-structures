@@ -17,73 +17,120 @@ I've proposed the below structure for my data model as it consolidates the indiv
 
 ![data schema](No_SQL_Data_Structure.PNG)
 
-## Create PostgreSQL Instance
-Prior to beginning the programtic portion of code below a PostgreSQL instance was setup through the AWS console. Instructions on how to do this can be found [here](https://aws.amazon.com/rds/postgresql/resources/).
+## Create DynamoDB Table
+Prior to beginning the programtic portion of code below a DynamoDB table was setup through the AWS console. Instructions on how to do this can be found [here](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/getting-started-step-1.html).
 
-
-## Connecting to the database
-This weekly assignment utilizes three different javascript files. Each of these represent specific commands that interact with the PostgreSQL database. In order to do this each of the files required a first portion of code focuses on entering credentials and connecting to the database thorugh AWS. This consistent code is shown here:
-```javascript
-const { Client } = require('pg');
-const dotenv = require('dotenv');
-dotenv.config({path: '/home/ec2-user/environment/data-structures/.env'});  
-
-// AWS RDS POSTGRESQL INSTANCE
-var db_credentials = new Object();
-db_credentials.user = 'stan';
-db_credentials.host = 'data-structures.cz4rib340wda.us-east-1.rds.amazonaws.com';
-db_credentials.database = 'aa';
-db_credentials.password = process.env.AWSRDS_PW;
-db_credentials.port = 5432;
-
-// Connect to the AWS RDS Postgres database
-const client = new Client(db_credentials);
-client.connect();
+## Data Structure
+Individual entries were saved as JSON objects in key, value pairs. Here's an example:
+```JSON
+  {
+    "Release_ID": 11613072,
+    "Artist_Name": "A.A.L. (Against All Logic)",
+    "Release_Title": "2012 - 2017",
+    "Release_Rating": 4,
+    "Review_Content": "Review Goes Here",
+    "Release_Year": 2018,
+    "Tags": "Experimental , Electronic ",
+    "Discogs_URL": "https://www.discogs.com/AAL-Against-All-Logic-2012-2017/release/11613072",
+    "Video_Array": "https://www.youtube.com/watch?v=MmbqC_2cBWw, , ",
+    "Spotify_ID": "1uzfGk9vxMXfaZ2avqwxod"
+  }
 ```
 
-## Create Tables
-The first script, wa04.js, is used to create tables in the PostgreSQL instance. In addition to the consistent code documented in the 'Connecting to the database' section creating the tables was done through two queries that specified the table structure as shown in the above 'database schema' section. I ran this script twice for thisQuery and thisQuery1 replaced in the client.query command.
-
+## Adding entries to the table
+To add these entries to the table I largely followed the [instructions on the AWS site here](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/GettingStarted.NodeJs.02.html). My full script is shown below: 
 ```javascript
-// create aalocations table for address info:
-var thisQuery = "CREATE TABLE aalocations (address varchar(100), lat double precision, long double precision);";
-// create meetinglist table for additional meeting info:
-var thisQuery1 = "CREATE TABLE meetinglist (meetingtitle varchar(200), address varchar(100), addressnotes varchar(200), meetingtimestart time, meetingtimeend time, specialinterest varchar(100), wheelchair boolean, meetingtype varchar(50));";
+var AWS = require("aws-sdk");
+var fs = require('fs');
 
-client.query(thisQuery1, (err, res) => {
-    console.log(err, res);
-    client.end();
+AWS.config.update({
+    region: "us-east-1",
+});
+
+var docClient = new AWS.DynamoDB.DocumentClient();
+
+console.log("Importing entries into DynamoDB. Please wait.");
+
+var allEntries = JSON.parse(fs.readFileSync('jkzone_sample.json', 'utf8'));
+allEntries.forEach(function(entry) {
+    var params = {
+        TableName: "jkzone",
+        Item: {
+            "Release_ID":  entry.Release_ID,
+            "Artist_Name": entry.Artist_Name,
+            "Release_Title":  entry.Release_Title,
+            "Release_Rating": entry.Release_Rating,
+            "Review_Content": entry.Review_Content,
+            "Release_Year": entry.Release_Year,
+            "Tags": entry.Tags,
+            "Discogs_URL": entry.Discogs_URL,
+            "Video_Array": entry.Video_Array,
+            "Spotify_ID": entry.Spotify_ID
+            
+        }
+    };
+
+    docClient.put(params, function(err, data) {
+       if (err) {
+           console.error("Unable to add entry", entry.Release_Title, ". Error JSON:", JSON.stringify(err, null, 2));
+       } else {
+           console.log("PutItem succeeded:", entry.Release_Title);
+       }
+    });
 });
 ```
-## Populate Tables
-The second script, wa04b.js, populates the aalocations table with the address and geolocation information from weekly assignment three. First the addressesForDb variable is created that contains the JSON objects from weekly assignment three with three fields address, Latitude, and Longitude. 
+
+## Connecting to the table
+The first portion of the script configures the AWS connection, I only needed to specify the region and create a variable that specifies a dynamodb document client object. This client object is used to pass input parameters to the specified table that's covered in the next section of code. Other methods of interacting with dynamoDB require attribute values to be explicitly set but using DocumentClient does not
 
 ```javascript
-var addressesForDb = [{"address":"122 E 37TH ST New York NY ","Latitude":"40.7483929","Longitude":"-73.9787906"},{"address":"30 E 35TH ST New York NY ","Latitude":"40.7496221","Longitude":"-73.9855348"},{"address":"350 E 56TH ST New York NY ","Latitude":"40.757654","Longitude":"-73.963834"},{"address":"619 LEXINGTON AVE New York NY ","Latitude":"40.6894374","Longitude":"-73.9367705"},{"address":"122 E 37TH ST New York NY ","Latitude":"40.7483929","Longitude":"-73.9787906"},{"address":"28 E 35TH ST New York NY ","Latitude":"40.7496065","Longitude":"-73.9854965"},{"address":"350 E 56TH ST New York NY ","Latitude":"40.757654","Longitude":"-73.963834"},{"address":"283 LEXINGTON AVE New York NY ","Latitude":"40.7479969","Longitude":"-73.9783809"},{"address":"122 E 37TH ST New York NY ","Latitude":"40.7483929","Longitude":"-73.9787906"},{"address":"619 LEXINGTON AVE New York NY ","Latitude":"40.6894374","Longitude":"-73.9367705"},{"address":"141 E 43RD ST New York NY ","Latitude":"40.7518754","Longitude":"-73.9747248"},{"address":"122 E 37TH ST New York NY ","Latitude":"40.7483929","Longitude":"-73.9787906"},{"address":"122 E 37TH ST New York NY ","Latitude":"40.7483929","Longitude":"-73.9787906"},{"address":"141 E 43RD ST New York NY ","Latitude":"40.7518754","Longitude":"-73.9747248"},{"address":"209 MADISON AVE New York NY ","Latitude":"40.7486487","Longitude":"-73.9821254"},{"address":"122 E 37TH ST New York NY ","Latitude":"40.7483929","Longitude":"-73.9787906"},{"address":"619 LEXINGTON AVE New York NY ","Latitude":"40.6894374","Longitude":"-73.9367705"},{"address":"240 E 31ST ST New York NY ","Latitude":"40.7430963","Longitude":"-73.9780494"},{"address":"114 E 35TH ST New York NY ","Latitude":"40.7473169","Longitude":"-73.9800724"},{"address":"230 E 60TH ST New York NY ","Latitude":"40.7615607","Longitude":"-73.9649474"},{"address":"244 E 58TH ST New York NY ","Latitude":"40.7600925","Longitude":"-73.9653811"},{"address":"619 LEXINGTON AVE New York NY ","Latitude":"40.6894374","Longitude":"-73.9367705"},{"address":"325 PARK AVE New York NY ","Latitude":"40.7574552","Longitude":"-73.9733937"},{"address":"236 E 31ST ST New York NY ","Latitude":"40.74314","Longitude":"-73.9781525"},{"address":"308 E 55TH ST New York NY ","Latitude":"40.7576943","Longitude":"-73.9657436"},{"address":"244 E 58TH ST New York NY ","Latitude":"40.7600925","Longitude":"-73.9653811"},{"address":"244 E 58TH ST New York NY ","Latitude":"40.7600925","Longitude":"-73.9653811"},{"address":"109 E 50TH ST New York NY ","Latitude":"40.7569178","Longitude":"-73.97309"}];
+var AWS = require("aws-sdk");
+var fs = require('fs');
+
+AWS.config.update({
+    region: "us-east-1",
+});
+
+var docClient = new AWS.DynamoDB.DocumentClient();
+
+console.log("Importing entries into DynamoDB. Please wait.");
 ```
-The next portion of the script uses the eachSeries method of the async module which waits for the method to complete before moving onto the next (side note, coming from python where I haven't needed this functionality its nice to learn about it here as I see its importance in ensuring nothing is missed). The next portion of code uses the SQL Insert statement to add these values into the aalocations table. 
+
+## Adding Entries
+The next portion of script reads a json file that contains three json objects structured as outlined in the Data Structure section above. The array method ForEach is used to parse these objects as individual entries, specifies the table name to add the entries to (jkzone) and what column the pieces of each individual entry will be added to. 
+
+The portion in quotes is the column name of the DynamoDB table, the 'entry.' portion refers to the key name in each of the JSON objects. The tutorial I linked above shows an alternative approach to explicitly setting each key name and instead wrapping these in another JSON object. An interesting approach I might use in the future as that would avoid issues where fields aren't consistent (for my data I know each entry has this information.
+
+The final piece of this code takes of these entries and puts them into the table using the DocClient variable we set above. 
+
+Worked well! I was able to confirm through the frontend tool that there are indeed three entires add to my specification.
 
 ```javascript
-async.eachSeries(addressesForDb, function(value, callback) {
-    const client = new Client(db_credentials);
-    client.connect();
-    var thisQuery = "INSERT INTO aalocations VALUES (E'" + value.address + "', " + value.Latitude + ", " + value.Longitude + ");";
-    client.query(thisQuery, (err, res) => {
-        console.log(err, res);
-        client.end();
+var allEntries = JSON.parse(fs.readFileSync('jkzone_sample.json', 'utf8'));
+allEntries.forEach(function(entry) {
+    var params = {
+        TableName: "jkzone",
+        Item: {
+            "Release_ID":  entry.Release_ID,
+            "Artist_Name": entry.Artist_Name,
+            "Release_Title":  entry.Release_Title,
+            "Release_Rating": entry.Release_Rating,
+            "Review_Content": entry.Review_Content,
+            "Release_Year": entry.Release_Year,
+            "Tags": entry.Tags,
+            "Discogs_URL": entry.Discogs_URL,
+            "Video_Array": entry.Video_Array,
+            "Spotify_ID": entry.Spotify_ID
+            
+        }
+    };
+
+    docClient.put(params, function(err, data) {
+       if (err) {
+           console.error("Unable to add entry", entry.Release_Title, ". Error JSON:", JSON.stringify(err, null, 2));
+       } else {
+           console.log("PutItem succeeded:", entry.Release_Title);
+       }
     });
-    setTimeout(callback, 1000); 
-}); 
-```
-## Ensure Table is Populated
-In wa04c we again connect to the PostgreSQL database and ensure that the insert statements have populated the information correctly using a SQL 'Select * ' statement. This selects all the records in the aalocations table and prints them with a console.log command.
-
-```javascript
-// Sample SQL statement to query the entire contents of a table: 
-var thisQuery = "SELECT * FROM aalocations;";
-
-client.query(thisQuery, (err, res) => {
-    console.log(err, res.rows);
-    client.end();
 });
 ```
