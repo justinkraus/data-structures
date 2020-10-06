@@ -1,13 +1,21 @@
 # Weekly Assignment 5
 
-The purpose of this script is to design a relational data schema for the AA meetings, create a PostgreSQL database in AWS, and input AA meetings location data into the PostgreSQL database. Starter code for the assignment is provided [here](https://github.com/visualizedata/data-structures/blob/master/weekly_assignment_04.md)
+The purpose of this script is to design a data model for a repository of blog posts, create a DynamoDB database in AWS, and input blog entries into the DynamoDB database. Starter code for the assignment is provided [here](https://github.com/visualizedata/data-structures/blob/master/weekly_assignment_04.md).
+
+## The Data
+The data I'll be using for the Dynamo DB instance is taken from a music blog project I ran for a few years. I would write notes about an album I listened to and enhanced it with rich media information (youtube links and Spotify objects) to create full blog posts. These were saved as a queryable database in a wordpress.org instance. I'd like to move away from wordpress in the future and rely on a more sophisticated api structure for recording information in the future so I'm using this opportunity to restructure my data.
+
+Here's an example workflow using the David Bowie album Heroes. I write a short text review, this triggers external api calls to Discogs and Spotify for media information, that information is added to my review to create a blog post to jk.zone and supporting outlets.
+
+![workflow](jkzoneworkflow.png)
+
 
 ## Database Schema
-A primary focus for this week is proposing an appropriate structure for our data to be stored in. This design, known as the data schema, considers both the data types we are working with as well as the actual data values to target an ideal state for our information. 
+A primary focus for this week is proposing an appropriate structure for our data to be stored in. This design, known as the data model, considers both the data types we are working with as well as the actual data values to target an ideal state for our information. 
 
-I've proposed the below structure for my database as it consolidates the meetings and associated information in one table with the location information in another. Additional tables could have been created to house categories such as meetingtype but for the current data set I felt it was overkill (although a possible future consideration is to seperate it for dropdown values using primary key linkages).
+I've proposed the below structure for my data model as it consolidates the individual blog posts and associated information in one table. 
 
-![data schema](aa_psql_data_structure.PNG)
+![data schema](No_SQL_Data_Structure.PNG)
 
 ## Create PostgreSQL Instance
 Prior to beginning the programtic portion of code below a PostgreSQL instance was setup through the AWS console. Instructions on how to do this can be found [here](https://aws.amazon.com/rds/postgresql/resources/).
