@@ -15,15 +15,15 @@ const client = new Client(db_credentials);
 client.connect();
 
 // create aalocations table for address info:
-// var thisQuery = "CREATE TABLE aalocations (address varchar(100), lat double precision, long double precision);";
+var thisQuery = "CREATE TABLE aalocations (address varchar(100), lat decimal, long decimal);";
 // create meetinglist table for additional meeting info:
-var thisQuery1 = "CREATE TABLE meetinglist (meetingtitle varchar(200), address varchar(100), addressnotes varchar(200), meetingtimestart time, meetingtimeend time, specialinterest varchar(100), wheelchair boolean, meetingtype varchar(50));";
+// var thisQuery1 = "CREATE TABLE meetinglist (meetingtitle varchar(200), address varchar(100), addressnotes varchar(200), meetingtimestart time, meetingtimeend time, specialinterest varchar(100), wheelchair boolean, meetingtype varchar(50));";
 
 
 // Sample SQL statement to delete a table: 
 // var thisQuery = "DROP TABLE aalocations;"; 
 
-client.query(thisQuery1, (err, res) => {
+client.query(thisQuery, (err, res) => {
     console.log(err, res);
     client.end();
 });
