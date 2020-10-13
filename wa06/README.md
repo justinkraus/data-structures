@@ -44,6 +44,9 @@ client.query(adrPoint, (err, res) => {
     }
 });
 ```
+### Query Results
+![workflow](wa06ss.png)
+
 
 ## DynamoDB Query
 The script to query DynamoDB is located in wa06a.js. As DynamoDB stores data in a No SQL format, querying the data is similar to JSON where the query is structured around keys. These keys are similar to field or column names in SQL.
@@ -106,3 +109,5 @@ dynamodb.query(params, function(err, data) {
     }
 });
 ```
+### Query Results
+![workflow](wa06ass.png)
