@@ -3,10 +3,10 @@
 The purpose of these scripts is to parse all of the information from the individual AA meeting location pages for incorporation into a PostgreSQL database. This information will eventually be used to complete the new version of the AA meeting location finder. 
 
 This assignment has mulitple parts each with their own challenges. While the final output here is shown, this was very much an itterative process that involved revising my approach throughout the assignment. I've broken up the assignment into four components:
-1. wa07d.js, Parse the Original HTML files
-2. wa07geo2.js, Obtaining Geolocation Information
-3. wa07psql1.js, Create Final Datastructure and PostgreSQL Tables
-3. wa07psql.js, Load Data into PostgreSQL Table
+1. Parse the Original HTML files (wa07d.js)
+2. Obtaining Geolocation Information (wa07geo2.js)
+3. Create Final Datastructure and PostgreSQL Tables (wa07psql1.js)
+3. Load Data into PostgreSQL Table (wa07psql.js)
 
 
 ## 1. Parse the Original HTML files
@@ -90,7 +90,7 @@ daytimeList.forEach(item=> {
 })});
 ```
 
-## Obtaining Geolocation Information
+## 2. Obtaining Geolocation Information
 Each meeting location needs to have geolocation (latitude and longitude) coordinates assigned for displaying on a map. Obtaining this information through an API is detailed [in week 3](https://github.com/justinkraus/data-structures/tree/master/wa03) but some changes were made to the process to reflect the updated meeting structure detailed in the previous section. 
 
 The API calls are returned and added to a tamuData array that contains the original address parsed from the AA meeting page and information provided by the API which is then saved to a standalone json file as done in week 3.
@@ -118,14 +118,14 @@ const result = equijoin(jsonData, geoData, "address", "address",
 fs.writeFileSync('/home/ec2-user/environment/data-structures/wa07/data/geolocComb/'+String(element)+'geoLocComb.json', JSON.stringify(result));
 ```
 
-## Create Final Datastructure and PostgreSQL Tables
+## 3. Create Final Datastructure and PostgreSQL Tables
 In [week 04](https://github.com/justinkraus/data-structures/tree/master/wa04) I created a proposed datastructure based on my understanding of the data at the time. The final fields used is similar however the geolocation information is now included on the primary meetinglist table. I chose this datastructure as it compliments the approach described in the 'joining geolocation' section where each meeting has all of the supporting information associated with it. This leads to a certain redundancy in the table structure where meeting location information is repeated but that was not a concern for this database size, ultimately I believe it will be easier to write queries around.
 
 ```javascript
 CREATE TABLE meetinglist (location varchar(200), meetingName varchar(200), address varchar(100), tamuAddress varchar(100), latitude decimal, longitude decimal, addressFull varchar(200), meetingDetails varchar(200), wheelChair boolean, specialInterest varchar(100), day varchar(20), start_time time, end_time time, type varchar(30));";
 ```
 
-## Load Data into PostgreSQL Table
+## 4. Load Data into PostgreSQL Table
 The final script loads a row for each meeting into the PostgreSQL table, an approach that expands on the [week 04](https://github.com/justinkraus/data-structures/tree/master/wa04) exercise. This was an iterative process that resulted in retooling the original parsing script as issues with escape characters and byte order marks impacted the PostgreSQL load. Ultimately all meetings were loaded successfully!
 
 ```javascript
