@@ -12,19 +12,13 @@ const fs = require('fs'),
 
 
 var filelist = ['m01','m02','m03','m04','m05','m06','m07','m08','m09','m10'];
-// var filelist = ['m09'];
+
 
 filelist.forEach(element => {
     
     var html_file = fs.readFileSync('/home/ec2-user/environment/data-structures/wa07/orig_html/'+String(element)+'.html');
-    
-    // var content = fs.readFileSync(html_file);
-    
-    // load `content` into a cheerio object
     var $ = cheerio.load(html_file);
-    
     var meetingsData =[];
-    
     var addr = ''; // this variable will hold the lines of text
     
     //Select Meeting Html
