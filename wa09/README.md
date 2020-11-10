@@ -3,22 +3,22 @@ The purpose of this assignment is to write data from a temperature / humidity se
 
 ## Background
 Below is a high level overview of the process.
-![photonprocess](photonProcess.png =250x)
+![photonprocess](photonProcess.png)
 
 
 ### The Sensor
 Data is recorded through a Particle Photon with temperature sensor. It connects to the internet via a wifi chip and sends a temperature/humidity reading to a specific web location.
-![sensor](photonSensor.jpg =250x)
+![sensor](photonSensor.jpg)
 
 
 ### Web API
 Data sent to the web location is output on a dashboard and API. I've chosen to record the humidity variable which is displayed as a standardized JSON object.
-![sensor](photonAPI.png =250x)
+![sensor](photonAPI.png)
 
 
 ### Database
 Through the JavaScript process manager pm2, AWS cloud 9 instance will look at the Web API every minute to record the temperature and write it as a row in a PostgreSQL database table.
-![sensor](photonDB.png =250x)
+![sensor](photonDB.png)
 
 ## Data Recording
 Setting up the temperature sensor and Web API was done using documentation available through the [Particle website](https://build.particle.io/). The Database and process manager scripts are included in this repository.
