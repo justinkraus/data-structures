@@ -3,10 +3,10 @@ The purpose of this assignment is to write data from a temperature / humidity se
 
 ## Background
 Below is a high level overview of the process.\
-<img src="photonProcess.png" height="50%" width="50%">
+<img src="photonProcess.png" height="75%" width="75%">
 
 
-### The Sensor
+### Physical Sensor
 Data is recorded through a Particle Photon with temperature sensor. It connects to the internet via a wifi chip and sends a temperature/humidity reading to a specific web location.\
 <img src="photonSensor.jpg" height="50%" width="50%">
 
