@@ -1,0 +1,82 @@
+<!doctype html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>jk.zone Review Archive1</title>
+  <meta name="description" content="Aaron's Process Blog">
+  <meta name="author" content="Aaron Hill">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <link rel="stylesheet" href="css/styles.css?v=1.0">
+
+</head>
+
+<body>
+
+<script>
+var data = {{{pbdata}}} ; 
+
+var myTable = '<table><thead><tr><th>ReleaseID</th><th>ReleaseTitle</th><th>Artist Name</th><th>Release Rating</th><th>Review</th></tr></thead><tbody>';
+
+for (var i=0; i < data.length; i++) {
+	myTable += '<tr>';
+	myTable += '<td>' + data[i].Release_ID.N + '</td>';
+	myTable += '<td>' + data[i].Release_Title.S + '</td>';
+	myTable += '<td>' + data[i].Artist_Name.S + '</td>';
+	myTable += '<td>' + data[i].Release_Rating.N + '</td>';
+	myTable += '<td>' + data[i].Review_Content.S + '</td>';
+	myTable += '</tr>';
+
+}
+
+            // "placeholder_id": entry.placeholder_id,
+            // "Release_ID":  entry.Release_ID,
+            // "Artist_Name": entry.Artist_Name,
+            // "Release_Title":  entry.Release_Title,
+            // "Release_Rating": entry.Release_Rating,
+            // "Review_Content": entry.Review_Content,
+            // "Release_Year": entry.Release_Year,
+            // "Tags": entry.Tags,
+            // "Discogs_URL": entry.Discogs_URL,
+            // "Video_Array": entry.Video_Array,
+            // "Spotify_ID": entry.Spotify_ID
+
+
+myTable += '</body></table>'
+
+$(window).on('load', function() {
+  $("#myEntries").html(myTable)
+});
+
+</script>
+
+
+
+
+<h3>jk.zone Review Archive</h3>
+<p>Day of the week determines albums that are shown:</p>
+<p>Mondays - Bad (Release Rating 1)</p>
+<p>Tuesdays - OK (Release Rating 2)</p>
+<p>Wednesdays - Good (Release Rating 3)</p>
+<p>Thursdays - Excellent (Release Rating 4)</p>
+<p>Fridays-Sundays - Classics (Release Rating 5)</p>
+
+<!--<form method="post" action="/processblog" enctype="multipart/form-data">-->
+<!--<label for="ratingselect">Select a Rating:</label>-->
+<!--<select name="ratingselect" id="ratingselect">-->
+<!--    <option value="5" selected>Classic</option>-->
+<!--    <option value="4">Excellent</option>-->
+<!--    <option value="3">Good</option>-->
+<!--    <option value="2">Fine</option>-->
+<!--    <option value="1">Bad</option>-->
+<!--</select>-->
+<!--<button  type="submit">Go</button>-->
+<!--</form>-->
+
+
+<div id='myEntries'></div>
+
+
+</body>
+</html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<!-- Create a div where the graph will take place -->
+<div id="my_dataviz"></div>
+
+<script>
+
+// template from here: https://www.d3-graph-gallery.com/graph/line_basic.html
+
+// set the dimensions and margins of the graph
+var margin = {top: 10, right: 30, bottom: 30, left: 60},
+    width = 1000 - margin.left - margin.right,
+    height = 600 - margin.top - margin.bottom;
+
+// append the svg object to the body of the page
+var svg = d3.select("#my_dataviz")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+var data = {{{sensordata}}} ; 
+
+let parseDate = d3.utcParse("%Y-%m-%dT%H:%M:%S.%L%Z");
+
+var formatDecimal = d3.format(".2f")
+
+//Read the data
+
+  // When reading the csv, I must format variables:
+  // function(d){
+  //   return { date : d3.timeParse("%Y-%m-%d")(d.sensorTime), value : d.value }
+  // },
+
+
+  // Now I can use this dataset:
+
+      // .domain(data.map( function(d) { return d.sensorTime; }));
+    // Add X axis --> it is a date format
+    var x = d3.scaleTime()
+      .domain(d3.extent(data, function(d) { 
+        return parseDate(d.sensortime);
+        }))
+            .range([ 0, width ]);
+    svg.append("g")
+      .attr("transform", "translate(0," + height + ")")
+      .call(d3.axisBottom(x));
+      
+    // svg.append("text")
+    // .datum(data)
+    // .attr("class", "x label")
+    // .attr("text-anchor", "end")
+    // .attr("x", width)
+    // .attr("y", height - 6)
+    // .text("d", parseDate(d.sensortime));
+
+    // Add Y axis
+    //format decimal adds sensors
+    // formatDecimal(d.sensorvalue)
+    // var y = d3.scaleLinear()
+    var y = d3.scaleLinear()
+      // .domain([0, d3.max(data, function(d) { return formatDecimal(d.sensorvalue); })])
+      .domain([0, 70])
+      // .domain([0, d3.max(data, function(d) {
+      //   return d3.max(d, function(d2){console.log(d2);return d.sensorvalue;}); 
+      // })])
+      .range([ height, 0 ]);
+    svg.append("g")
+      .call(d3.axisLeft(y));
+
+    // Add the line
+    svg.append("path")
+      .datum(data)
+      .attr("fill", "none")
+      .attr("stroke", "steelblue")
+      .attr("stroke-width", 1.5)
+      .attr("d", d3.line()
+        .x(function(d) { return x(parseDate(d.sensortime)) })
+        .y(function(d) { return y(formatDecimal(d.sensorvalue)) })
+        )
+    
+  svg.append("line")
+  .style("stroke", "red")
+  .attr("x1", 0)
+  .attr("y1", y(65))
+  .attr("x2", width)
+  .attr("y2", y(65));
+  
+  svg.append("line")
+  .style("stroke", "black")
+  .attr("x1", 0)
+  .attr("y1", y(55))
+  .attr("x2", width)
+  .attr("y2", y(55));
+
+</script>
